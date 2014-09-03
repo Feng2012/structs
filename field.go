@@ -60,14 +60,15 @@ func (f *Field) Kind() reflect.Kind {
 }
 
 func (f *Field) checkForSet(v reflect.Value, val interface{}) (reflect.Value, error) {
+	var given reflect.Value
 	if !f.IsExported() {
-		return 0, errNotExported
+		return given, errNotExported
 	}
 	// do we get here? not sure...
 	if !v.CanSet() {
-		return 0, errNotSettable
+		return given, errNotSettable
 	}
-	given := reflect.ValueOf(val)
+	given = reflect.ValueOf(val)
 	if given.Kind() == reflect.Ptr {
 		given = given.Elem()
 	}
