@@ -59,36 +59,70 @@ func (f *Field) Kind() reflect.Kind {
 	return f.value.Kind()
 }
 
+func (f *Field) checkForSet(v reflect.Value, val interface{}) (reflect.Value, error) {
+	if !f.IsExported() {
+		return 0, errNotExported
+	}
+	// do we get here? not sure...
+	if !v.CanSet() {
+		return 0, errNotSettable
+	}
+	given := reflect.ValueOf(val)
+	if given.Kind() == reflect.Ptr {
+		given = given.Elem()
+	}
+	return given, nil
+}
+
 // Set sets the field to given value v. It retuns an error if the field is not
 // settable (not addresable or not exported) or if the given value's type
 // doesn't match the fields type.
 func (f *Field) Set(val interface{}) error {
 	// needed to make the field settable
 	v := reflect.Indirect(f.value)
-
-	if !f.IsExported() {
-		return errNotExported
+	given, err := f.checkForSet(v, val)
+	if err != nil {
+		return err
 	}
-
-	// do we get here? not sure...
-	if !v.CanSet() {
-		return errNotSettable
-	}
-
-	given := reflect.ValueOf(val)
-
-	if given.Kind() == reflect.Ptr {
-		given = given.Elem()
-	}
-
 	if v.Kind() != given.Kind() {
 		return fmt.Errorf("wrong kind: %s want: %s", given.Kind(), v.Kind())
 	}
-
 	v.Set(given)
 	return nil
 }
 
+// SetInt sets the field underlying value to val. It panics if the field is not a Kind is not Int, Int8, Int16, Int32, or Int64, or if CanSet() is false.
+func (f *Field) SetInt(val int64) error {
+	v := reflect.Indirect(f.value)
+	_, err := f.checkForSet(v, val)
+	if err != nil {
+		return err
+	}
+	v.SetInt(val)
+	return nil
+}
+
+// SetFloat sets the field underlying value to val. It panics if the field is not a Kind is not Float32 or Float64, or if CanSet() is false.
+func (f *Field) SetFloat(val float64) error {
+	v := reflect.Indirect(f.value)
+	_, err := f.checkForSet(v, val)
+	if err != nil {
+		return err
+	}
+	v.SetFloat(val)
+	return nil
+}
+
+//SetUint sets the field underlying value to val. It panics if the field is not a Kind is not Uint, Uintptr, Uint8, Uint16, Uint32, or Uint64, or if CanSet() is false.
+func (f *Field) SetUint(val uint64) error {
+	v := reflect.Indirect(f.value)
+	_, err := f.checkForSet(v, val)
+	if err != nil {
+		return err
+	}
+	v.SetUint(val)
+	return nil
+}
 // Fields returns a slice of Fields. This is particular handy to get the fields
 // of a nested struct . A struct tag with the content of "-" ignores the
 // checking of that particular field. Example:
