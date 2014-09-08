@@ -80,15 +80,14 @@ func (f *Field) checkForSet(v reflect.Value, val interface{}) (reflect.Value, er
 // doesn't match the fields type.
 func (f *Field) Set(val interface{}) error {
 	// needed to make the field settable
-	v := reflect.Indirect(f.value)
-	given, err := f.checkForSet(v, val)
+	given, err := f.checkForSet(f.value, val)
 	if err != nil {
 		return err
 	}
-	if v.Kind() != given.Kind() {
-		return fmt.Errorf("wrong kind: %s want: %s", given.Kind(), v.Kind())
+	if f.value.Kind() != given.Kind() {
+		return fmt.Errorf("wrong kind: %s want: %s", given.Kind(), f.value.Kind())
 	}
-	v.Set(given)
+	f.value.Set(given)
 	return nil
 }
 
