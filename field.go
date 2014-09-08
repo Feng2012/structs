@@ -93,34 +93,31 @@ func (f *Field) Set(val interface{}) error {
 
 // SetInt sets the field underlying value to val. It panics if the field is not a Kind is not Int, Int8, Int16, Int32, or Int64, or if CanSet() is false.
 func (f *Field) SetInt(val int64) error {
-	v := reflect.Indirect(f.value)
-	_, err := f.checkForSet(v, val)
+	_, err := f.checkForSet(f.value, val)
 	if err != nil {
 		return err
 	}
-	v.SetInt(val)
+	f.value.SetInt(val)
 	return nil
 }
 
 // SetFloat sets the field underlying value to val. It panics if the field is not a Kind is not Float32 or Float64, or if CanSet() is false.
 func (f *Field) SetFloat(val float64) error {
-	v := reflect.Indirect(f.value)
-	_, err := f.checkForSet(v, val)
+	_, err := f.checkForSet(f.value, val)
 	if err != nil {
 		return err
 	}
-	v.SetFloat(val)
+	f.value.SetFloat(val)
 	return nil
 }
 
 //SetUint sets the field underlying value to val. It panics if the field is not a Kind is not Uint, Uintptr, Uint8, Uint16, Uint32, or Uint64, or if CanSet() is false.
 func (f *Field) SetUint(val uint64) error {
-	v := reflect.Indirect(f.value)
-	_, err := f.checkForSet(v, val)
+	_, err := f.checkForSet(f.value, val)
 	if err != nil {
 		return err
 	}
-	v.SetUint(val)
+	f.value.SetUint(val)
 	return nil
 }
 // Fields returns a slice of Fields. This is particular handy to get the fields
