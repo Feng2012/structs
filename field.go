@@ -69,7 +69,7 @@ func (f *Field) checkForSet(v reflect.Value, val interface{}) (reflect.Value, er
 		return given, errNotSettable
 	}
 	given = reflect.ValueOf(val)
-	if given.Kind() == reflect.Ptr {
+	if given.Kind() == reflect.Ptr && v.Kind() != reflect.Ptr{
 		given = given.Elem()
 	}
 	return given, nil
