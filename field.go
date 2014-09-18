@@ -69,7 +69,7 @@ func (f *Field) checkForSet(v reflect.Value, val interface{}) (reflect.Value, er
 		return given, errNotSettable
 	}
 	given = reflect.ValueOf(val)
-	if given.Kind() == reflect.Ptr && v.Kind() != reflect.Ptr{
+	if given.Kind() == reflect.Ptr && v.Kind() != reflect.Ptr {
 		given = given.Elem()
 	}
 	return given, nil
@@ -120,6 +120,7 @@ func (f *Field) SetUint(val uint64) error {
 	f.value.SetUint(val)
 	return nil
 }
+
 // Fields returns a slice of Fields. This is particular handy to get the fields
 // of a nested struct . A struct tag with the content of "-" ignores the
 // checking of that particular field. Example:
